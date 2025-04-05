@@ -24,9 +24,6 @@ public class MessageProcessorTest {
     private ConsumerWorker consumerWorker;
 
     @Mock
-    private ExecutorService executorService;
-
-    @Mock
     private ListOperations<String, String> listOps;
 
     private MessageProcessor messageProcessor;
@@ -35,7 +32,7 @@ public class MessageProcessorTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        messageProcessor = new MessageProcessor(5, redisTemplate, beanFactory);
+        messageProcessor = new MessageProcessor(5, redisTemplate, beanFactory, "consumerPrefixId");
 
         when(redisTemplate.opsForList()).thenReturn(listOps);
 
