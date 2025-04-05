@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  redis-publisher:
+    build:
+      context: .
+      dockerfile: Dockerfile-publisher
+    container_name: redis_publisher
+    depends_on:
+      - redis
+    ports:
+      - "6000:6000"
+    command: ["sh", "-c", "sleep 15 && python publisher.py"]
+
+  redis-sink-consumer-group:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: redis-sink-consumer-group
+    environment:
+      - spring.data.redis.host=redis
+      - consumer.threadPoolSize=5
+      - JAVA_OPTS=-Xmx512m
+    depends_on:
+    - redis
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    container_name: redis-commander
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
