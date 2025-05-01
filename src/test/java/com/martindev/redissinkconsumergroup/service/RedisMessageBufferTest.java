@@ -8,13 +8,13 @@ import org.springframework.data.redis.connection.Message;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingQueue;
 
-class RedisMessageConsumerTest {
+class RedisMessageBufferTest {
 
-    private RedisMessageConsumer redisMessageConsumer;
+    private RedisMessageBuffer redisMessageConsumer;
 
     @BeforeEach
     void setUp() {
-        redisMessageConsumer = new RedisMessageConsumer();
+        redisMessageConsumer = new RedisMessageBuffer();
     }
 
     @Test
@@ -25,7 +25,7 @@ class RedisMessageConsumerTest {
 
         redisMessageConsumer.onMessage(message, null);
 
-        BlockingQueue<String> queue = RedisMessageConsumer.getMessageQueue();
+        BlockingQueue<String> queue = RedisMessageBuffer.getMessageQueue();
         assertFalse(queue.isEmpty());
         assertEquals(testMessage, queue.take());
     }

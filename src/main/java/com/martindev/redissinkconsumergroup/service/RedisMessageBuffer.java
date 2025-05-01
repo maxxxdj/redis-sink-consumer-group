@@ -9,7 +9,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
-public class RedisMessageConsumer implements MessageListener {
+public class RedisMessageBuffer implements MessageListener {
     @Getter
     private static final BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>();
     //TODO we can add here executor as well if we want to scale the push to the inner buffer
