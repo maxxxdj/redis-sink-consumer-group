@@ -23,11 +23,11 @@ public class MetricsReporter {
 
     @Scheduled(fixedRate = 3000)
     public void reportMessagesPerSecond() {
-        final List<ConsumerWorker> group = messageProcessor.getConsumerGroup();
+        final List<Consumer> group = messageProcessor.getConsumerGroup().getConsumers();
         group.forEach(el ->
                 System.out.printf("Consuemr: %s, consuming: %b, processed msgs: %d%n", el.getConsumerId(), el.isConsuming(), el.getCounter().get()));
         long totalCount = group.stream()
-                .map(ConsumerWorker::getCounter)
+                .map(Consumer::getCounter)
                 .mapToLong(el -> el.getAndSet(0))
                 .sum();
         System.out.printf("Total %d messages processed (3seconds) and per second: %d%n" , totalCount , Math.round(totalCount / 3.0f));

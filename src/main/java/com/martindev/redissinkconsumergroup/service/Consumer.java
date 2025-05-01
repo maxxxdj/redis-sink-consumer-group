@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 @Scope("prototype")
-public class ConsumerWorker implements Runnable {
+public class Consumer implements Runnable {
     @Setter
     @Getter
     private String consumerId;
@@ -30,8 +30,8 @@ public class ConsumerWorker implements Runnable {
     private final AtomicLong counter = new AtomicLong(0);
     private Timer timer;
 
-    public ConsumerWorker(StringRedisTemplate redisTemplate,
-                          @Lazy MetricsReporter metricsReporter) {
+    public Consumer(StringRedisTemplate redisTemplate,
+                    @Lazy MetricsReporter metricsReporter) {
         this.redisTemplate = redisTemplate;
         this.metricsReporter = metricsReporter;
     }
@@ -52,7 +52,7 @@ public class ConsumerWorker implements Runnable {
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                final String message = RedisMessageConsumer.getMessageQueue().take();
+                final String message = RedisMessageBuffer.getMessageQueue().take();
                 isConsuming = true;
                 final String modifiedJson = message.substring(0, message.length() - 1)
                         + ", \"random_field\": " + random.nextInt()
@@ -69,10 +69,11 @@ public class ConsumerWorker implements Runnable {
     }
 
     void sendToStream(final String messageData) {
-        redisTemplate.opsForStream().add(
-                StreamRecords.newRecord()
+        redisTemplate.opsForStream()
+                .add(StreamRecords.newRecord()
                         .in("messages:processed")
-                        .ofObject(messageData));
+                        .ofObject(messageData)
+                    );
     }
 
     @PreDestroy

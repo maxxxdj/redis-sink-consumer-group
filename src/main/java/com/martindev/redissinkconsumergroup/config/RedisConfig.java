@@ -1,6 +1,6 @@
 package com.martindev.redissinkconsumergroup.config;
 
-import com.martindev.redissinkconsumergroup.service.RedisMessageConsumer;
+import com.martindev.redissinkconsumergroup.service.RedisMessageBuffer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -21,7 +21,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter listenerAdapter(RedisMessageConsumer subscriber) {
+    public MessageListenerAdapter listenerAdapter(RedisMessageBuffer subscriber) {
         return new MessageListenerAdapter(subscriber);
     }
 }
